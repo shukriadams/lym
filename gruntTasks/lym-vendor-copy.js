@@ -22,32 +22,28 @@ module.exports = function(grunt) {
             var files = fileUtils.getFilesIn(components[i].diskPath, grunt);
             for (var file in files){
 
-                if (files[file].extension !== '.js')
+                if (path.basename(file) !== lymConfig.requireConfig)
                     continue;
 
                 var  data = fs.readFileSync(files[file].diskPath);
                 var context = {
-                    lym : {
+                    require : {
                         config : function(configs){
                             requires.push({
                                 configs : configs,
                                 component : components[i]
                             });
                         }
-                    },
-                    require : function(){
-                        // do nothing
-                    },
-                    define : function(){
-                        // do nothing
                     }
                 };
 
                 try{
                     vm.runInNewContext(data, context);
                 }catch(ex){
-                    grunt.verbose.writeln(files[file].diskPath + ' failed to load, no require config taken from it.');
+                    grunt.log.writeln(files[file].diskPath + ' failed to load ' + file);
                 }
+
+                break;
             }
         }
 

@@ -1,6 +1,6 @@
 {
   "name": "lym",
-  "version" : "0.0.1",
+  "version" : "0.0.2",
   "description" : "Assembles and builds modular frontend code",
   "bin": {
     "lym": "lym.js"

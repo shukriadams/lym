@@ -46,6 +46,9 @@
     "_comment": "Lym will place temporary files here when it builds. Path is relative to cwd. ",
     "tempFolder" : ".lym",
 
+    "_comment": "Name of JS file in component folder containing requirejs config for that component.",
+    "requireConfig" : "require-config.js",
+
     "_comment" : "Optional. List of sass file endings to be bound before main component sass file. For component 'myComponent' the main sass file would be called 'myComponent.sass', a pre-main stage would be 'myComponent-settings.sass' and you would add '-settings' to this array.",
     "sassBuildStages" : [ ]
 

@@ -16,7 +16,6 @@ module.exports = function(grunt) {
             dir = lymConfig.masterJSFolder,
             os = require('os'),
             pageBase = fs.readFileSync( path.join(lymConfig.tempFolder, 'js', 'pagescript-requirejs-config.js') ),
-            lymEmpty = fs.readFileSync(  path.join( __dirname, '..', 'gruntTasks', 'script-lymEmpty.js') ),
             destinationFolder = mode === 'dev' ? lymConfig.devRoot : lymConfig.releaseRoot;
 
         if (!fs.existsSync(dir)){
@@ -45,7 +44,6 @@ module.exports = function(grunt) {
             // add semicolon for safety in case pagePage is not properly terminated
             pageScript =
                 fileUtils.divider() + os.EOL +
-                lymEmpty + os.EOL +
                 fileUtils.divider() + os.EOL +
                 pageBase + ';' + os.EOL +
                 fileUtils.divider() + os.EOL +
