@@ -1,0 +1,12 @@
+{
+  "name": "lym",
+  "authors": [
+    "Shukri Adams <shukri.adams@gmail.com>"
+  ],
+  "dependencies": {
+        "requirejs": "git://github.com/jrburke/requirejs-bower.git#2.1.16"
+  },
+  "license": "MIT",
+  "description": "Assembles and builds modular frontend code",
+  "private": false
+}

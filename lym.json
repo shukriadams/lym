@@ -1,0 +1,54 @@
+{
+  "lymConfig" : {
+
+    "_comment" : "Development root folder. This path can be HTTP server. Components, ",
+    "devRoot" : "dev",
+
+    "_comment" : "Path release build is put in. This can be HTTP served.",
+    "releaseRoot" : "release",
+
+    "_comment" : "Components are placed in this folder. Path is relative to dev root.",
+    "componentFolder" : "__components",
+
+    "_comment" : "Javascript entry point files are placed in here. Path is relative to dev root.",
+    "masterJSFolder" : "__js",
+
+    "_comment" : "Assemble root folder (see http://assemble.io)",
+    "assembleFolder" : "assemble",
+
+    "_comment" : "relative to dev root. Path css files are put in ",
+    "cssFolder" : "css",
+
+    "_comment" : "relative to dev root/release root. Javascript lib files are put in here.",
+    "libFolder" : "lib",
+
+    "_comment" : "rector to bundle. relative to dev/release root. Path local js files are put in ",
+    "jsFolder": "js",
+
+    "_comment" : "Javascript files are uglified. Works in release mode only",
+    "uglify" : true,
+
+    "_comment" : "Css files are minifed. Works in release mode only",
+    "minify" : true,
+
+    "_comment" : "In release mode, file component javascript files are concatenated to. Do not add an extension to this.",
+    "componentJsBundle" : "componentBundle",
+
+    "_comment" : "Main CSS bundle.",
+    "cssBundle" : "lym",
+
+    "_comment" : "Send modules' css output to specific style sheets if you want to split your site's CSS. Any module not listed here will be sent to the default style sheet.",
+    "cssBundles" : { "myStyleSheet" : [  ] },
+
+    "_comment" : "Set to true to write intermediate css and other logging info to temp folder.",
+    "debug" : false,
+
+    "_comment": "Lym will place temporary files here when it builds. Path is relative to cwd. ",
+    "tempFolder" : ".lym",
+
+    "_comment" : "Optional. List of sass file endings to be bound before main component sass file. For component 'myComponent' the main sass file would be called 'myComponent.sass', a pre-main stage would be 'myComponent-settings.sass' and you would add '-settings' to this array.",
+    "sassBuildStages" : [ ]
+
+  }
+
+}
