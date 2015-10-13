@@ -189,6 +189,10 @@ exports.resolveComponent = function(root, name){
     var fs = require('fs'),
         path = require('path');
 
+    if (!fs.existsSync(root)){
+        return null;
+    }
+
     return _find(root);
 
     function _find(dir){
@@ -201,7 +205,6 @@ exports.resolveComponent = function(root, name){
                 return dir;
             }
 
-            // subdirectory found, recurse that
             if (fs.statSync(path.join(dir,item)).isDirectory()){
                 return _find(path.join(dir,item));
             }

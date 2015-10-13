@@ -6,7 +6,7 @@ var grunt = require('grunt'),
     yargs = require('yargs').argv,
     targetFolder = process.cwd(),
     configLoader = require('./nodeTasks/configLoader'),
-    allowedCommands = ['dev', 'release', 'install', 'init', 'devf'];
+    allowedCommands = ['dev', 'release', 'install', 'init', 'devf', 'scaffold'];
 
 var command = process.argv.length >= 3  ? process.argv[2] : null;
 console.log('Running lym : ' + command);
@@ -53,6 +53,10 @@ if (command === 'install'){
     //
     var task = require('./nodeTasks/installComponent');
     task.install(component, targetFolder, config);
+
+} else if(command === 'scaffold'){
+    var task = require('./nodeTasks/scaffold');
+    task.scaffold(targetFolder, config);
 
 } else if(command === 'init'){
 
