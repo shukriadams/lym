@@ -192,24 +192,27 @@ exports.resolveComponent = function(root, name){
     if (!fs.existsSync(root)){
         return null;
     }
-
-    return _find(root);
-
+    var result = null;
     function _find(dir){
         var items = fs.readdirSync(dir),
             dirName = path.basename(dir);
 
         for (var i = 0 ; i < items.length ; i ++){
             var item = items[i];
-            if (dirName === name && item.toLowerCase() === 'component.json'){
-                return dir;
+
+            if (item.toLowerCase() === 'component.json' && dirName === name){
+                result = unixPath(dir);
+                return;
             }
 
             if (fs.statSync(path.join(dir,item)).isDirectory()){
-                return _find(path.join(dir,item));
+                _find(path.join(dir,item));
             }
         }
     };
+
+    _find(root);
+    return result;
 };
 
 
@@ -225,6 +228,31 @@ exports.ensureDirectory = function(path){
     }
 };
 
+
+// try to find bower settings file, this should be moved to common lib
+exports.findBowerSettings = function(cwd){
+
+    var jf = require('jsonfile'),
+        path = require('path'),
+        fs = require('fs'),
+        home = require('osenv').home(),
+        bowerrcPath = path.join(cwd, '.bowerrc');
+
+    // look in working folder
+    if(fs.existsSync(bowerrcPath)){
+        console.log('Found local .bowerrc settings file.');
+        return jf.readFileSync(bowerrcPath);
+    }
+
+    ;
+    bowerrcPath = path.join(home, '.bowerrc');
+    if(fs.existsSync(bowerrcPath)){
+        console.log('Found HOME .bowerrc settings file.');
+        return jf.readFileSync(bowerrcPath);
+    }
+
+    return {};
+}
 
 /*
  * Builds path bridge from path to point where lym intersects

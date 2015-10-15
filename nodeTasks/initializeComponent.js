@@ -9,7 +9,7 @@ exports.initialize = function(pkg, cwd, config){
         jf = require('jsonfile'),
         path = require('path'),
         fs = require('fs'),
-        ncp = require('ncp'),
+        cpr = require('cpr'),
         fileUtils =require('./../gruntTasks/fileUtils'),
         componentFolder = fileUtils.resolveComponent(config.lymConfig.componentFolder, pkg);
 
@@ -61,7 +61,7 @@ exports.initialize = function(pkg, cwd, config){
                             pkpFolder = path.join(componentFolder, 'bower_components', dep);
 
                         fileUtils.ensureDirectory(path.join(componentFolder, 'bower_components'));
-                        ncp(src, pkpFolder , function(){
+                        cpr(src, pkpFolder , function(){
                             done ++;
                             if (done>= deps.length){
                                 doMake();
