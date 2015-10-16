@@ -1,0 +1,19 @@
+/* line 1, ../../dev/__components/repo2/second/second-mixins.scss */
+.second-mixins {
+  color: orange;
+}
+
+/* line 1, ../../dev/__components/repo1/first/scss/first-mixins.scss */
+.first-mixins {
+  color: red;
+}
+
+/* line 1, ../../dev/__components/repo1/first/scss/first-settings.scss */
+.first-setting {
+  color: red;
+}
+
+/* line 1, ../../dev/__components/repo2/second/second.scss */
+.second {
+  color: green;
+}

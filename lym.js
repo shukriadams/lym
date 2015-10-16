@@ -33,7 +33,7 @@ if (yargs.config){
 }
 
 // override path
-targetFolder = yargs.path || targetFolder;
+targetFolder = yargs.p || targetFolder;
 targetFolder = path.resolve(targetFolder);
 
 // load config from various places

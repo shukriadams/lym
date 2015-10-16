@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="css/first-bundle.css">
+        <link rel="stylesheet" href="css/lym.css">
+    </head>
+    <body>
+        <div class="layout">
+            [defaultLayout-hbs-output]
+        </div>
+        
+<div class="page">
+    [indexPage-hbs-output]
+</div>
+
+<div class="partial">
+    [partial-hbs-output]
+    [partial-json-output]
+</div>
+
+
+
+
+<div class="first">
+
+    [first-hbs-output]
+    [first-json-output]
+
+    <!-- javascript content will be inserted here -->
+    <div id="first"></div>
+
+    <div class="second">
+    [second-hbs-output]
+
+    <!-- ignore second.json model, it won't be available in current context -->
+
+    <!-- javascript content will be inserted here -->
+    <div id="second"></div>
+</div>
+
+</div>
+
+
+        <script data-main="/js/bundle1" src="/lib/require.js"></script>
+    </body>
+</html>

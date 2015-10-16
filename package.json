@@ -1,6 +1,6 @@
 {
   "name": "lym",
-  "version" : "0.0.4",
+  "version" : "0.0.5",
   "description" : "Assembles and builds modular frontend code",
   "bin": {
     "lym": "lym.js"
@@ -14,6 +14,7 @@
     "bower" : "1.5.3",
     "cpr" : "0.4.3",
     "chokidar" : "1.2.0",
+    "connect" : "3.4.0",
     "grunt" : "0.4.5",
     "grunt-cli" : "0.1.13",
     "grunt-contrib-compass" : "1.0.1",
@@ -25,13 +26,16 @@
     "jsonfile " : "2.0.0",
     "lodash" : "3.5.0",
     "mkdirp" : "0.5.1",
+    "mocha" : "2.3.3",
     "osenv" : "0.1.3",
     "process" : "0.11.2",
     "semver" : "5.0.3",
-    "yargs" : "3.26.0"
+    "serve-static" : "1.10.0",
+    "yargs" : "3.26.0",
+    "zombie" : "4.0.8"
   },
   "scripts": {
-    "test" : "node ./tests/test.js"
+    "test": "mocha test ./test"
   },  
   "author": "Shukri Adams (shukri.adams@gmail.com)",
   "license": "MIT"

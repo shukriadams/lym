@@ -1,0 +1,6 @@
+{
+  "name": "third",
+  "dependencies": {
+    "klon" : "0.0.9"
+  }
+}

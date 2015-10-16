@@ -1,0 +1,6 @@
+{
+  "name": "third",
+  "devDependencies": {
+    "underscore": "1.8.2"
+  }
+}
