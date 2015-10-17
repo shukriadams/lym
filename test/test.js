@@ -12,6 +12,9 @@ var testSite = path.join(__dirname, '__testSite'),
     devRoot = path.join(testSite, 'dev'),
     releaseRoot = path.join(testSite, 'release');
 
+// scaffold test site
+child('node lym scaffold internal_dev --nomake --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
+
 if (!fs.existsSync(releaseRoot))
     mkdirp.sync(releaseRoot);
 
@@ -36,12 +39,12 @@ Browser.Assert.prototype.hasText = function(selector, expected, stripWhiteSpace)
 
 
 runTests('8081', function(){
-    child('node ../lym dev --p ' + testSite, { stdio:[0,1,2] });
+    child('node lym dev --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
 });
 
 
 runTests('8082', function(){
-    child('node ../lym release --p ' + testSite, { stdio:[0,1,2] });
+    child('node lym release --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
 });
 
 

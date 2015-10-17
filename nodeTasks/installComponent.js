@@ -1,7 +1,7 @@
 /*
 *
 * */
-exports.install = function(pkg ,targetFolder, config){
+exports.install = function(pkg, config){
 
     var bower = require('bower'),
         jf = require('jsonfile'),
@@ -12,9 +12,9 @@ exports.install = function(pkg ,targetFolder, config){
         fs = require('fs'),
         semver = require('semver'),
         fileUtils = require('./../gruntTasks/fileUtils'),
-        customBowerConfig = fileUtils.findBowerSettings(targetFolder),
+        customBowerConfig = fileUtils.findBowerSettings(config.lymConfig.cwd),
         init = require('./initializeComponent'),
-        bowerFolder = path.join(targetFolder, customBowerConfig.directory || 'bower_components');
+        bowerFolder = path.join(config.lymConfig.cwd, customBowerConfig.directory || 'bower_components');
 
     bowerGet(pkg);
 
@@ -89,7 +89,7 @@ exports.install = function(pkg ,targetFolder, config){
                 var srcFolder = path.join(bowerFolder, pkg);
                 cpr(srcFolder, componentTargetPath , function(){
                     console.log(pkg + ' copied to components folder.');
-                    init.initialize(pkg, targetFolder, config);
+                    init.initialize(pkg, config.lymConfig.cwd, config);
                 });
             }
 

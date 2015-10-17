@@ -1,15 +1,23 @@
 /*
- *
+ * Sets up a new website in the working folder, by copying files from /assets/scaffold. Files are not copied if they already exist at target location.
  * */
-exports.scaffold = function(cwd, config){
+exports.scaffold = function(config, options){
+
     var path = require('path'),
         fs = require('fs'),
-        fileUtils = require('./../gruntTasks/fileUtils');
+        fileUtils = require('./../gruntTasks/fileUtils'),
+        lymInitialize = require('./initializeComponent');
 
     console.log('Scaffolding website ... ');
 
-    _process(path.join(__dirname, '..', 'assets', 'assemble'), '/',config.lymConfig.assembleFolder );
-    _process(path.join(__dirname, '..', 'assets', 'dev'), '/', config.lymConfig.devRoot );
+    _process(path.join(__dirname, '..', 'assets', options.content), '/', config.lymConfig.cwd );
+
+    //  force initialize all components in scaffolded content
+    var components = fileUtils.findComponents(config.lymConfig.cwd);
+    for (var i = 0 ; i< components.length ; i ++){
+        if (!options.nomake)
+            lymInitialize.initialize(components[i].name, config);
+    }
 
     function _process(dir, relativeDir, destination){
         var items = fs.readdirSync(dir);

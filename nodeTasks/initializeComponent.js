@@ -1,7 +1,7 @@
 /*
 *
 * */
-exports.initialize = function(pkg, cwd, config){
+exports.initialize = function(pkg, config){
 
     var bower = require('bower'),
         child = require('child_process').execSync,
@@ -38,10 +38,10 @@ exports.initialize = function(pkg, cwd, config){
         }
 
         if (deps.length === 0){
+            // proceed directy to make if we don't need to download anything first
             doMake();
         } else {
             console.log('Running bower for component ' + pkg);
-
 
             bower.commands
 
@@ -57,7 +57,7 @@ exports.initialize = function(pkg, cwd, config){
                     // need to manually copy bower content from cwd bower folder to
                     // component bower folder because bower API will always send content to cwd.
                     depsCleanNames.forEach(function(dep){
-                        var src = path.join(cwd, 'bower_components', dep),
+                        var src = path.join(config.lymConfig.cwd, 'bower_components', dep),
                             pkpFolder = path.join(componentFolder, 'bower_components', dep);
 
                         fileUtils.ensureDirectory(path.join(componentFolder, 'bower_components'));

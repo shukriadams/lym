@@ -6,18 +6,18 @@ var grunt = require('grunt'),
     yargs = require('yargs').argv,
     targetFolder = process.cwd(),
     configLoader = require('./nodeTasks/configLoader'),
-    allowedCommands = ['dev', 'release', 'install', 'init', 'devf', 'scaffold'];
+    allowedCommands = ['dev', 'release', 'install', 'init', 'fast', 'scaffold', 'watch'];
 
 var command = process.argv.length >= 3  ? process.argv[2] : null;
 console.log('Running lym : ' + command);
-
+ 
 // verify command
 if (!command || allowedCommands.indexOf(command) == -1){
     console.log('Invalid command. Lym supports : ' + allowedCommands.join(', '));
     return;
 }
 
-
+ 
 // look for config override json
 var config = {};
 if (yargs.config){
@@ -38,7 +38,8 @@ targetFolder = path.resolve(targetFolder);
 
 // load config from various places
 config = configLoader.load(config, targetFolder);
-
+// append cwd manually once we know it
+config.lymConfig.cwd = targetFolder;
 
 
 if (command === 'install'){
@@ -52,49 +53,49 @@ if (command === 'install'){
 
     //
     var task = require('./nodeTasks/installComponent');
-    task.install(component, targetFolder, config);
+    task.install(component, config);
 
 } else if(command === 'scaffold'){
-    var task = require('./nodeTasks/scaffold');
-    task.scaffold(targetFolder, config);
+
+    // content is optional
+    var content = process.argv.length > 3 ?  process.argv[3] : null,
+        task = require('./nodeTasks/scaffold');
+
+    task.scaffold(config, {
+        content : content || 'hello_world',
+        nomake : yargs.nomake || false
+    });
 
 } else if(command === 'init'){
 
-    // ensure component name
     var component = process.argv.length > 3 ?  process.argv[3] : null,
-        init = require('./nodeTasks/initializeComponent');
+        task = require('./nodeTasks/initializeComponent');
+
+    // ensure component name
     if (!component){
-        console.log('lym init requires a bower name');
+        console.log('lym init requires a bower name or url');
         return;
     }
 
-    init.initialize(component, targetFolder, config);
+    task.initialize(component, config);
 
-} else if (command === 'dev' || command === 'release'|| command === 'devf') {
+} else if (command === 'dev' || command === 'release' || command === 'fast') {
 
-    // all other commands handled by grunt script
-    var gruntOptions ={
-        gruntfile: path.join(__dirname, 'gruntfile.js'),
+    var task = require('./grunt');
+
+    task.grunt(config, {
         task : command,
-        config : JSON.stringify(config),
-        path : targetFolder
-    };
-
-    if (yargs.stack)
-        gruntOptions.stack = true;
-    if (yargs.config)
-        gruntOptions.config = yargs.config;
-
-    grunt.cli(gruntOptions);
-
+        isFast : false,
+        stack : yargs.stack
+    });
 } else if(command === 'watch') {
 
-    /*
+    console.log('Lym is watching for changes ...');
+
     var chokidar = require('chokidar'),
         child = require('child_process').execSync;
 
-    var watcher = chokidar.watch(config.lymConfig.componentFolder, {
-        //ignored: /[\/\\]\./,
+    var watcher = chokidar.watch([config.lymConfig.componentFolder, config.lymConfig.assembleFolder], {
         persistent: true
     });
 
@@ -109,27 +110,17 @@ if (command === 'install'){
             if (allowedExtensions.indexOf(ext) === -1)
                 return;
 
-            // all other commands handled by grunt script
-            var gruntOptions = {
-                gruntfile: path.join(__dirname, 'gruntfile.js'),
+            console.log(ext + ' changed detected');
+
+            var task = require('./grunt');
+            task.grunt(config, {
                 task : 'watch',
-                config : JSON.stringify(config),
-                target : ext,
-                path : targetFolder
-            };
-
-            if (yargs.stack)
-                gruntOptions.stack = true;
-            if (yargs.config)
-                gruntOptions.config = yargs.config;
-
-            // child('grunt watch --path '+ targetFolder + ' --target ' + ext + ' --config ' + JSON.stringify(config), { cwd : __dirname, stdio:[0,1,2] });
-            grunt.cli(gruntOptions);
-
-            console.log(require('util').inspect(grunt));
+                isFast : false,
+                targets : [ext]
+            });
 
         })
-*/
+
 } else {
 
     console.log('lym : invalid command. Available : ');

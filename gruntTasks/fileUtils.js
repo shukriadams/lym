@@ -108,7 +108,10 @@ exports.findComponents = function(root, grunt){
 
     _findComponentFolders(root, '');
 
-    grunt.config.set('lym.cache.findComponents', componentFolders);
+    if (grunt){
+        grunt.config.set('lym.cache.findComponents', componentFolders);
+    }
+
     return componentFolders;
 
     function _findComponentFolders(dir, webPath){

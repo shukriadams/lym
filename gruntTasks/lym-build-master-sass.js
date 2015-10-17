@@ -16,7 +16,7 @@ module.exports = function(grunt) {
             fileUtils = require('./fileUtils'),
             path = require('path'),
             lymConfig = grunt.config('lymConfig'),
-            pathBridge = fileUtils.findIntersect(grunt.option('path'),  lymConfig.componentFolder),
+            pathBridge = fileUtils.findIntersect(lymConfig.cwd,  lymConfig.componentFolder),
             resolvedComponents = fileUtils.findComponents(lymConfig.componentFolder, grunt);
 
         // create raw list of component sass file paths.
@@ -126,7 +126,6 @@ module.exports = function(grunt) {
                 sass[cssOutFile] += '@import "' + orderedComponent.path.replace(/\\/g, "/") + '";' +  os.EOL;
             }
         }
-
 
         // create temp cache folders
         fileUtils.ensureDirectory(path.join(lymConfig.tempFolder, 'scss'));

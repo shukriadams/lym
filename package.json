@@ -1,6 +1,6 @@
 {
   "name": "lym",
-  "version" : "0.0.6",
+  "version" : "0.0.7",
   "description" : "Assembles and builds modular frontend code",
   "bin": {
     "lym": "lym.js"
@@ -15,9 +15,9 @@
     "cpr" : "0.4.3",
     "chokidar" : "1.2.0",
     "connect" : "3.4.0",
+    "glob" : "5.0.15",
     "grunt" : "0.4.5",
     "grunt-cli" : "0.1.13",
-    "grunt-contrib-compass" : "1.0.1",
     "grunt-contrib-copy" : "0.8.0",
     "grunt-contrib-concat" : "0.5.1",
     "grunt-contrib-cssmin" : "0.13.0",
@@ -27,6 +27,7 @@
     "lodash" : "3.5.0",
     "mkdirp" : "0.5.1",
     "mocha" : "2.3.3",
+    "node-sass" : "3.3.3",
     "osenv" : "0.1.3",
     "process" : "0.11.2",
     "semver" : "5.0.3",

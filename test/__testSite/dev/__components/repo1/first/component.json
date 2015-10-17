@@ -1,6 +1,0 @@
-{
-  "name" : "first",
-  "dependencies" : {
-      "second" : "0.0.1"
-  }
-}
