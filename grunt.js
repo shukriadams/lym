@@ -1,14 +1,17 @@
 /*
- * Supported tasks : dev|release|fast|watch. Default is dev.
+ * Supported tasks : build|release|fast|watch. Default is build.
  *
- * dev : Builds site in dev mode. Lym component javascript files are not concatenated,
+ * build : Builds site in dev mode. Lym component javascript files are not concatenated,
  *       allowing for easier debugging. Webroot must be the dev folder so javascript files
  *       have to be nested within in this to be accessible.
- * release : Builds site in dev mode. Javascript files for Lym components are concatenated
+ * release : Builds site in release mode. Javascript files for Lym components are concatenated
  *           and placed in each JS bundle file.
  * watch : compiles minimal, meant to be called by watch job
  * fast : compiles the same as watch, meant to be called directly from CLI instead of from watcher.
  * */
+
+'use strict';
+
 exports.grunt = function(config, gruntOptions){
 
     var grunt = require('grunt'),
@@ -26,9 +29,9 @@ exports.grunt = function(config, gruntOptions){
     // workaround to bypass not using a gruntfile
     grunt.task.init = function() {};
 
-    // Set task - allowed options are 'dev' and 'release'. 'dev' is forced if no task is specified.
-    var mode = task === 'release' ? 'release' : 'dev',
-        targetBuildFolder = mode === 'dev'  ? config.lymConfig.devRoot : config.lymConfig.releaseRoot;
+    // Set task - allowed options are 'build' and 'release'. 'build' is forced if no task is specified.
+    var mode = task === 'release' ? 'release' : 'build',
+        targetBuildFolder = mode === 'build'  ? config.lymConfig.devRoot : config.lymConfig.releaseRoot;
 
     // second merge : default grunt settings - this will overwrite any grunt settings the caller may have passed in
     var gruntConfig = {
@@ -252,8 +255,8 @@ exports.grunt = function(config, gruntOptions){
     }
 
 
-    grunt.registerTask('default', ['dev']);
-    grunt.registerTask('dev', devTasks);
+    grunt.registerTask('default', ['build']);
+    grunt.registerTask('build', devTasks);
     grunt.registerTask('fast', devWatchTasks);
     grunt.registerTask('watch', devWatchTasks);
     grunt.registerTask('release', releaseTasks);

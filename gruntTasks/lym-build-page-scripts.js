@@ -16,7 +16,7 @@ module.exports = function(grunt) {
             dir = lymConfig.masterJSFolder,
             os = require('os'),
             pageBase = fs.readFileSync( path.join(lymConfig.tempFolder, 'js', 'pagescript-requirejs-config.js') ),
-            destinationFolder = mode === 'dev' ? lymConfig.devRoot : lymConfig.releaseRoot;
+            destinationFolder = mode === 'build' ? lymConfig.devRoot : lymConfig.releaseRoot;
 
         if (!fs.existsSync(dir)){
             grunt.log.writeln('Script directory ' + dir + ' not found, skipping.');
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
                 requireOverridesPathRelease = path.join(lymConfig.tempFolder, 'js', 'require-pathOverrides-release.js'),
                 requireOverridesPath = path.join(lymConfig.tempFolder, 'js', 'require-pathOverrides-dev.js');
 
-            if (mode === 'dev' && fs.existsSync(requireOverridesPath)){
+            if (mode === 'build' && fs.existsSync(requireOverridesPath)){
                 requireOverrides = fs.readFileSync(requireOverridesPath).toString();
             } else if (mode === 'release' && fs.existsSync(requireOverridesPathRelease)){
                 requireOverrides = fs.readFileSync(requireOverridesPathRelease).toString();

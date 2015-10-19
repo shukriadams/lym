@@ -5,7 +5,6 @@
 'use strict';
 
 
-
 exports.divider = function(){
   return '// ==================================================================;';
 };
@@ -95,7 +94,7 @@ exports.unixPath = unixPath;
 exports.findComponents = function(root, grunt){
     var fs = require('fs'),
         path = require('path'),
-        jf = require('jsonfile'),
+        jf = require(path.join(__dirname, '..', 'utils', 'json')),
         componentFolders = [];
 
     // look for cached component list in grunt object
@@ -128,11 +127,11 @@ exports.findComponents = function(root, grunt){
             // presence of component.json file flags folder as component root
             if (item.toLowerCase() === 'component.json'){
                 isComponent = true;
-                componentJson = jf.readFileSync(path.join(dir, item));
+                componentJson = jf.read(path.join(dir, item));
             }
 
             if (item.toLowerCase() === '.bower.json'){
-                bowerJson = jf.readFileSync(path.join(dir, item));
+                bowerJson = jf.read(path.join(dir, item));
             }
         }
 
@@ -235,8 +234,8 @@ exports.ensureDirectory = function(path){
 // try to find bower settings file, this should be moved to common lib
 exports.findBowerSettings = function(cwd){
 
-    var jf = require('jsonfile'),
-        path = require('path'),
+    var path = require('path'),
+	    jf = require(path.join(__dirname, '..', 'utils', 'json')),
         fs = require('fs'),
         home = require('osenv').home(),
         bowerrcPath = path.join(cwd, '.bowerrc');
@@ -244,14 +243,14 @@ exports.findBowerSettings = function(cwd){
     // look in working folder
     if(fs.existsSync(bowerrcPath)){
         console.log('Found local .bowerrc settings file.');
-        return jf.readFileSync(bowerrcPath);
+        return jf.read(bowerrcPath);
     }
 
     ;
     bowerrcPath = path.join(home, '.bowerrc');
     if(fs.existsSync(bowerrcPath)){
         console.log('Found HOME .bowerrc settings file.');
-        return jf.readFileSync(bowerrcPath);
+        return jf.read(bowerrcPath);
     }
 
     return {};

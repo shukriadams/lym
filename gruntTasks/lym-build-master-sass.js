@@ -21,8 +21,10 @@ module.exports = function(grunt) {
 
         // create raw list of component sass file paths.
         for (var i = 0 ; i < resolvedComponents.length ; i ++){
-            var component = resolvedComponents[i];
-            var resolved = resolveComponent(component.name);
+
+            var component = resolvedComponents[i],
+                resolved = resolveComponent(component.name);
+
             if (!resolved){
                 grunt.fail.fatal('Could not resolve expected component ' + component.name);
             }
@@ -33,6 +35,7 @@ module.exports = function(grunt) {
         for (var p in components){
             if (!components.hasOwnProperty(p))
                 continue;
+
             var component = components[p];
             if (!component.dependencies)
                 continue;
@@ -53,8 +56,10 @@ module.exports = function(grunt) {
         while (changed){
             changed = false;
             for (var p in components){
+
                 if (!components.hasOwnProperty(p))
                     continue;
+
                 var component = components[p];
                     if (!component.dependencies)
                         continue;
@@ -76,9 +81,11 @@ module.exports = function(grunt) {
 
         for (var p in components){
             if (!components.hasOwnProperty(p))
-            continue;
+                continue;
+
             orderedComponents.push(components[p]);
         }
+
         orderedComponents.sort(function(a, b){
             return a.order - b.order;
         });

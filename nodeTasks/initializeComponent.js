@@ -1,13 +1,16 @@
 /*
 *
 * */
+
+'use strict';
+
 exports.initialize = function(pkg, config){
 
     var bower = require('bower'),
         child = require('child_process').execSync,
         fork = require('child_process').fork,
-        jf = require('jsonfile'),
         path = require('path'),
+        jf = require(path.join(__dirname, '..', 'utils', 'json')),
         fs = require('fs'),
         cpr = require('cpr'),
         fileUtils =require('./../gruntTasks/fileUtils'),
@@ -28,7 +31,7 @@ exports.initialize = function(pkg, config){
     var bowerPath = path.join(componentFolder, 'bower.json');
     if (fs.existsSync(bowerPath)){
         // gather dependency and dependency version
-        var bowerJson = jf.readFileSync(bowerPath),
+        var bowerJson = jf.read(bowerPath),
             depsCleanNames = [],
             deps = [];
 

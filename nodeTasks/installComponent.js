@@ -1,12 +1,14 @@
 /*
 *
 * */
+'use strict';
+
 exports.install = function(pkg, config){
 
     var bower = require('bower'),
-        jf = require('jsonfile'),
         http = require('http'),
         path = require('path'),
+        jf = require(path.join(__dirname, '..', 'utils', 'json')),
         mkdirp = require('mkdirp'),
         cpr = require('cpr'),
         fs = require('fs'),
@@ -31,7 +33,7 @@ exports.install = function(pkg, config){
         if (tag && fs.existsSync(bowerPackageFolder)){
             var bowerJsonPath = path.join(bowerFolder, pkg, '.bower.json');
             if (fs.existsSync(bowerJsonPath)){
-                var bowerJson = jf.readFileSync(bowerJsonPath),
+                var bowerJson = jf.read(bowerJsonPath),
                     presentVersion = bowerJson._release;
 
                 var diff = semver.diff(presentVersion, tag);
@@ -89,7 +91,7 @@ exports.install = function(pkg, config){
                 var srcFolder = path.join(bowerFolder, pkg);
                 cpr(srcFolder, componentTargetPath , function(){
                     console.log(pkg + ' copied to components folder.');
-                    init.initialize(pkg, config.lymConfig.cwd, config);
+                    init.initialize(pkg, config);
                 });
             }
 
@@ -100,7 +102,7 @@ exports.install = function(pkg, config){
                 return;
             }
 
-            var componentJson = jf.readFileSync(componentPath);
+            var componentJson = jf.read(componentPath);
             if (!componentJson.dependencies){
                 return;
             }

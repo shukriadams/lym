@@ -1,6 +1,9 @@
 /*
  * Sets up a new website in the working folder, by copying files from /assets/scaffold. Files are not copied if they already exist at target location.
  * */
+
+'use strict';
+
 exports.scaffold = function(config, options){
 
     var path = require('path'),

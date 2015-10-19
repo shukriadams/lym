@@ -8,9 +8,9 @@ Getting started
 ---
 - install Lym with **npm install -g lym**.
 - in any folder, run **lym scaffold** to set up a basic site. This isn't a requirement but it's handy to get quickly started.
-- run **lym dev** to compile your set in dev mode (faster building, no script concatenation etc), or **lym release** for the full treatment.
+- run **lym build** to compile your set in dev mode (faster building, no script concatenation etc), or **lym release** for the full treatment.
 - serve your markup with a web server of your choice from /dev or /release.
-- Lym has no runtime dependencies other than NodeJS (it has been tested on 0.12).
+- Lym has no runtime dependencies other than NodeJS (it has been tested on 0.12) and Git.
 
 Add components
 ---

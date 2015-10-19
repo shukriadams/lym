@@ -1,3 +1,5 @@
+'use strict';
+
 describe('scaffold tests', function() {
     this.timeout(20000);
 

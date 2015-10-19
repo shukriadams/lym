@@ -1,16 +1,19 @@
 /*
-*
+* Loads default lym.config and file system config, also does final runtime changes and resolving of folder
 * */
-exports.load = function(overrideConfig, cwd){
 
-    var jf = require('jsonfile'),
+'use strict';
+
+exports.build = function(overrideConfig, cwd){
+
+    var path = require('path'),
+        jf = require(path.join(__dirname, '..', 'utils', 'json')),
         fs = require('fs'),
-        _ = require("lodash"),
-        path = require('path');
+        _ = require("lodash");
 
     // load default config in parent folder. We assume this always exists
     var defaultConfigPath = path.resolve(path.join(__dirname, '..' , 'lym.json')),
-        config = jf.readFileSync(defaultConfigPath);
+        config = jf.read(defaultConfigPath);
 
     // is there an override folder in working directory?
     var workingConfigPath = path.join(cwd, 'lym.json'),
@@ -25,7 +28,7 @@ exports.load = function(overrideConfig, cwd){
         _.merge(config, overrideConfig);
         console.log('Using config from command line');
     } else if(workingConfigExists){
-        var workingConfig = jf.readFileSync(workingConfigPath);
+        var workingConfig = jf.read(workingConfigPath);
         _.merge(config, workingConfig);
         console.log('Using config from working folder');
     } else {
@@ -41,6 +44,9 @@ exports.load = function(overrideConfig, cwd){
     // force component and master js folders into build folder
     config.lymConfig.componentFolder = path.join(config.lymConfig.devRoot, config.lymConfig.componentFolder).replace(/\\/g, "/");
     config.lymConfig.masterJSFolder = path.join(config.lymConfig.devRoot, config.lymConfig.masterJSFolder).replace(/\\/g, "/");
+
+    // finally, append cwd to config so we have it available wherever needed
+    config.lymConfig.cwd = cwd;
 
     return config;
 

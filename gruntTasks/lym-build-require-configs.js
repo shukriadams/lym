@@ -15,7 +15,7 @@ module.exports = function(grunt) {
             components = fileUtils.findComponents(lymConfig.componentFolder, grunt);
 
         // build paths to components. These are used in dev mode only
-        if (mode === 'dev'){
+        if (mode === 'build'){
 
             // in dev mode, we point to each component js file separately, so each must be mapped
             for (var i = 0 ; i < components.length ; i ++){

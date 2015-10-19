@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require("assert"),
 	grunt = require("grunt"),
     connect = require('connect'),
@@ -39,7 +41,7 @@ Browser.Assert.prototype.hasText = function(selector, expected, stripWhiteSpace)
 
 
 runTests('8081', function(){
-    child('node lym dev --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
+    child('node lym build --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
 });
 
 
