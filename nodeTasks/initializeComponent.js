@@ -17,7 +17,7 @@ exports.initialize = function(pkg, config){
         componentFolder = fileUtils.resolveComponent(config.lymConfig.componentFolder, pkg);
 
     if (!fs.existsSync(componentFolder)){
-        console.log('Initialization failed - component ' + pkg + ' not installed. Install it first.');
+        console.log('Initialization failed - ' + pkg + ' not found in component folder. Install it first.');
         return;
     }
 
@@ -64,7 +64,7 @@ exports.initialize = function(pkg, config){
                             pkpFolder = path.join(componentFolder, 'bower_components', dep);
 
                         fileUtils.ensureDirectory(path.join(componentFolder, 'bower_components'));
-                        cpr(src, pkpFolder , function(){
+                        cpr(src, pkpFolder, { overwrite : true}, function(){
                             done ++;
                             if (done>= deps.length){
                                 doMake();

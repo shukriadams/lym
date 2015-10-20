@@ -16,7 +16,8 @@ exports.install = function(pkg, config){
         fileUtils = require('./../gruntTasks/fileUtils'),
         customBowerConfig = fileUtils.findBowerSettings(config.lymConfig.cwd),
         init = require('./initializeComponent'),
-        bowerFolder = path.join(config.lymConfig.cwd, customBowerConfig.directory || 'bower_components');
+        bowerDirectory = require('bower-directory'),
+        bowerFolder = bowerDirectory.sync();
 
     bowerGet(pkg);
 
@@ -37,13 +38,14 @@ exports.install = function(pkg, config){
                     presentVersion = bowerJson._release;
 
                 var diff = semver.diff(presentVersion, tag);
+
                 if (diff === 'major'){
-                    throw 'Incompatible packages - version ' + tag + ' requisted, but ' + presentVersion + ' already present.';
+                    throw 'Error - incompatible versions of ' + pkg + ' : '  + tag + ' requested, ' + presentVersion + ' already present.';
                 }
 
                 if (semver.gt(presentVersion, tag)){
                     console.log('A better version of ' + pkg + ' (' + presentVersion + ') is already installed.');
-                    return;
+                    download = false;
                 } else if (semver.eq(presentVersion, tag)){
                     console.log(pkg + ' is already installed');
                     download = false;
@@ -75,6 +77,7 @@ exports.install = function(pkg, config){
 
 
         function processPackage(){
+
             // copy to target folder
             var componentTargetPath = fileUtils.resolveComponent(config.lymConfig.componentFolder, pkg);
             componentTargetPath = componentTargetPath || path.join(config.lymConfig.componentFolder, pkg);
@@ -86,10 +89,11 @@ exports.install = function(pkg, config){
             // case skip but move on to handle dependencies. The git check is a safeguard to allow developing of
             // components inside components folder.
             if (fs.existsSync(path.join( componentTargetPath, '.git'))) {
-                console.log('Component folder contains git clone of ' + pkg + ', Bower fetch skipped.');
+                console.log('Installed version of ' + pkg + ' contains git clone, will not overwrite.');
             } else {
                 var srcFolder = path.join(bowerFolder, pkg);
-                cpr(srcFolder, componentTargetPath , function(){
+                console.log('Copying ' + pkg + (tag? '#' + tag:'') + ' to components folder...');
+                cpr(srcFolder, componentTargetPath, {overwrite : true}, function(err, files){
                     console.log(pkg + ' copied to components folder.');
                     init.initialize(pkg, config);
                 });
@@ -120,13 +124,15 @@ exports.install = function(pkg, config){
 
     } // bowerGet()
 
-    // gets bower info for a given package from bower registry. If no bower registry is explicitly provided, the official
+
+    // Gets bower info for a given package from bower registry. If no bower registry is explicitly provided, the official
     // bower registry is used
+    // returns two args : url pkg can be found at, and pkg name
     function getBowerPackageInfo(pkg, callback){
 
         var registryUrl = customBowerConfig.registry || 'http://bower.herokuapp.com';
         registryUrl = registryUrl + '/packages/' + pkg;
-        console.log('Fetching ' + pkg + ' info from ' + registryUrl);
+        console.log('Looking up info for package ' + pkg + ' from ' + registryUrl);
 
         http.get(registryUrl, function(res) {
             var json = '';
@@ -146,4 +152,5 @@ exports.install = function(pkg, config){
             });
         });
     }
+
 };

@@ -1,3 +1,8 @@
+/*
+* Basic tests -
+* - lym build
+* - lym release
+* */
 'use strict';
 
 var assert = require("assert"),

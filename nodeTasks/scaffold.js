@@ -11,7 +11,7 @@ exports.scaffold = function(config, options){
         fileUtils = require('./../gruntTasks/fileUtils'),
         lymInitialize = require('./initializeComponent');
 
-    console.log('Scaffolding website ... ');
+    console.log('Scaffolding website in ' + config.lymConfig.cwd);
 
     _process(path.join(__dirname, '..', 'assets', options.content), '/', config.lymConfig.cwd );
 

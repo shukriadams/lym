@@ -1,6 +1,6 @@
 {
   "name": "lym",
-  "version" : "0.0.8",
+  "version" : "0.0.9",
   "description" : "Assembles and builds modular frontend code",
   "bin": {
     "lym": "lym.js"
@@ -12,6 +12,7 @@
   "dependencies": {
     "assemble": "0.4.42",
     "bower" : "1.5.3",
+    "bower-directory" : "1.0.0",
     "colors" : "1.1.2",
     "cpr" : "0.4.3",
     "chokidar" : "1.2.0",
