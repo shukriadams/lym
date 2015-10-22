@@ -1,24 +1,29 @@
-// deletes a directory and all content synchronously
+// deletes a directory and all content synchronously. Used by unit tests only.
+exports.rd = function(dir, maxTries){
+    // gave up on Windows and brute forced directory
+    if (!maxTries)
+        maxTries = 20;
 
-exports.rd = function(dir){
-    var path = require('path'),
-        fs = require('fs');
-    _rd(dir);
+    var tries = 0,
+        delay = 200;
 
-    function _rd(dir)
-    {
-        var items = fs.readdirSync(dir);
-        for (var i = 0 ; i < items.length ; i ++){
-            var item = path.join(dir, items[i]);
-            if (fs.statSync(item).isDirectory()){
-                _rd(item);
-            } else {
-                fs.unlinkSync(item);
-            }
-        }
-
-        fs.rmdirSync(dir);
+    if (process.platform === 'win32'){
+        windowsDelete();
+    } else {
+        rimraf.sync(dir);
     }
 
-
+    function windowsDelete(){
+        try
+        {
+            require('child_process').execSync('rd ' + dir + '  /s /q');
+        }catch(ex)
+        {
+            tries ++;
+            if (tries < maxTries){
+                console.log(dir + ' delete failed, trying again ...');
+                setTimeout(windowsDelete, delay);
+            }
+        }
+    }
 };

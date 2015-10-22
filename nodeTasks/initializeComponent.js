@@ -16,6 +16,11 @@ exports.initialize = function(pkg, config){
         fileUtils =require('./../gruntTasks/fileUtils'),
         componentFolder = fileUtils.resolveComponent(config.lymConfig.componentFolder, pkg);
 
+    if (!pkg){
+        console.log('lym init requires an installed component name.');
+        return;
+    }
+
     if (!fs.existsSync(componentFolder)){
         console.log('Initialization failed - ' + pkg + ' not found in component folder. Install it first.');
         return;
@@ -75,6 +80,8 @@ exports.initialize = function(pkg, config){
                 });
         }
     }
+
+    console.log('Done initializing ' + pkg);
 
     function doMake(){
         // do make.js stuff

@@ -20,7 +20,6 @@ exports.grunt = function(config, gruntOptions){
         _ = require('lodash'),
         path = require('path'),
         task = gruntOptions.task,
-        isFast = gruntOptions.fast,
         targets = gruntOptions.targets;
 
     // force working directory change, simulates gruntfile behavior
@@ -220,11 +219,6 @@ exports.grunt = function(config, gruntOptions){
         if (targets.indexOf('scss') === -1){
             devWatchTasks.splice(devWatchTasks.indexOf('compass'), 1);
         }
-    }
-
-    // remove "luxury" safety jobs to speed up building. This is still experimental.
-    if (isFast){
-        devTasks.splice(devTasks.indexOf('bower'), 1);
     }
 
     var releaseTasks = [

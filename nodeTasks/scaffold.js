@@ -4,21 +4,33 @@
 
 'use strict';
 
-exports.scaffold = function(config, options){
+exports.scaffold = function(content, config ,nomake){
 
     var path = require('path'),
         fs = require('fs'),
         fileUtils = require('./../gruntTasks/fileUtils'),
         lymInitialize = require('./initializeComponent');
 
+    // force default values
+    nomake = nomake || false;
+    content = content|| 'hello_world';
+
+    // ensure content exists
+    var sourcePath = path.join(__dirname, '..', 'assets', content);
+    if (!fs.existsSync(sourcePath)){
+        console.log(content + ' is not a valid internal content package.');
+        process.exit(1001);
+    }
+
     console.log('Scaffolding website in ' + config.lymConfig.cwd);
 
-    _process(path.join(__dirname, '..', 'assets', options.content), '/', config.lymConfig.cwd );
+    _process(sourcePath, '/', config.lymConfig.cwd );
+
 
     //  force initialize all components in scaffolded content
     var components = fileUtils.findComponents(config.lymConfig.cwd);
     for (var i = 0 ; i< components.length ; i ++){
-        if (!options.nomake)
+        if (!nomake)
             lymInitialize.initialize(components[i].name, config);
     }
 

@@ -1,5 +1,5 @@
 /*
-* Basic tests -
+* build tests -
 * - lym build
 * - lym release
 * */
@@ -20,7 +20,7 @@ var testSite = path.join(__dirname, '__testSite'),
     releaseRoot = path.join(testSite, 'release');
 
 // scaffold test site
-child('node lym scaffold internal_dev --nomake --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
+child('node lymcli scaffold internal_dev --nomake --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
 
 if (!fs.existsSync(releaseRoot))
     mkdirp.sync(releaseRoot);
@@ -46,12 +46,12 @@ Browser.Assert.prototype.hasText = function(selector, expected, stripWhiteSpace)
 
 
 runTests('8081', function(){
-    child('node lym build --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
+    child('node lymcli build --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
 });
 
 
 runTests('8082', function(){
-    child('node lym release --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
+    child('node lymcli release --p ' + testSite, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
 });
 
 

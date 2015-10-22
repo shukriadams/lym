@@ -1,9 +1,9 @@
 /*
-*
+* Installs a component. Component must be be a registered Bower name.
 * */
 'use strict';
 
-exports.install = function(pkg, config){
+exports.install = function(component, options){
 
     var bower = require('bower'),
         http = require('http'),
@@ -14,12 +14,18 @@ exports.install = function(pkg, config){
         fs = require('fs'),
         semver = require('semver'),
         fileUtils = require('./../gruntTasks/fileUtils'),
-        customBowerConfig = fileUtils.findBowerSettings(config.lymConfig.cwd),
+        customBowerConfig = fileUtils.findBowerSettings(options.config.lymConfig.cwd),
         init = require('./initializeComponent'),
         bowerDirectory = require('bower-directory'),
         bowerFolder = bowerDirectory.sync();
 
-    bowerGet(pkg);
+    // ensure component name
+    if (!component){
+        console.log('lym install requires a bower name');
+        return;
+    }
+
+    bowerGet(component);
 
     // pkg must be a qualified package name, as declared on bower, and as stored on local file system
     // url and tag are optional
@@ -79,8 +85,8 @@ exports.install = function(pkg, config){
         function processPackage(){
 
             // copy to target folder
-            var componentTargetPath = fileUtils.resolveComponent(config.lymConfig.componentFolder, pkg);
-            componentTargetPath = componentTargetPath || path.join(config.lymConfig.componentFolder, pkg);
+            var componentTargetPath = fileUtils.resolveComponent(options.config.lymConfig.componentFolder, pkg);
+            componentTargetPath = componentTargetPath || path.join(options.config.lymConfig.componentFolder, pkg);
             if (!fs.existsSync(componentTargetPath)){
                 mkdirp.sync(componentTargetPath);
             }
@@ -95,7 +101,7 @@ exports.install = function(pkg, config){
                 console.log('Copying ' + pkg + (tag? '#' + tag:'') + ' to components folder...');
                 cpr(srcFolder, componentTargetPath, {overwrite : true}, function(err, files){
                     console.log(pkg + ' copied to components folder.');
-                    init.initialize(pkg, config);
+                    init.initialize(pkg, options.config);
                 });
             }
 
