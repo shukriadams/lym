@@ -31,8 +31,8 @@ describe('install component tests', function() {
         testFolder = path.join(__dirname, '__installTest'),
         bowerReg = require('child_process').exec,
         bowerRegProc = null,
-        lym = require('../lym'),
-        childSync = require('child_process').execSync;
+        lym = require('../index'),
+        sync = require('child_process').execSync;
 
     before(function() {
 
@@ -70,7 +70,7 @@ describe('install component tests', function() {
 
     it('should install a chain of components', function(done) {
 
-        childSync('node lymcli install lymtest1 --p ' + testFolder, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
+        sync('node lym install lymtest1 --p ' + testFolder, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
 
         var componentFolder = path.join(testFolder, 'dev', '__components');
         assert.equal(true, fs.existsSync(path.join(componentFolder, 'lymtest1', '.bower.json')), '.bower.json, lymtest1');
@@ -90,7 +90,7 @@ describe('install component tests', function() {
 
     it('should install a component and do a soft version override', function(done) {
 
-        childSync('node lymcli install lymtest8 --p ' + testFolder, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
+        sync('node lym install lymtest8 --p ' + testFolder, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
 
         var componentFolder = path.join(testFolder, 'dev', '__components');
         assert.equal(true, fs.existsSync(path.join(componentFolder, 'lymtest8', '.bower.json')), '.bower.json, lymtest8');

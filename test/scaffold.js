@@ -8,7 +8,7 @@ describe('scaffold tests', function() {
         assert = require('assert'),
         rd = require(path.join(__dirname, '..', 'utils', 'rd')),
         mkdirp = require('mkdirp'),
-        lym = require('../lym'),
+        lym = require('../index'),
         testFolder = path.join(__dirname, '__scaffoldTest');
 
     beforeEach(function() {

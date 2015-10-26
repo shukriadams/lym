@@ -11,6 +11,12 @@ exports.build = function(overrideConfig, cwd){
         fs = require('fs'),
         _ = require("lodash");
 
+    if (!cwd){
+        cwd = process.cwd();
+    }
+    cwd = path.resolve(cwd);
+
+
     // load default config in parent folder. We assume this always exists
     var defaultConfigPath = path.resolve(path.join(__dirname, '..' , 'lym.json')),
         config = jf.read(defaultConfigPath);

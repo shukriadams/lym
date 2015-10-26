@@ -24,13 +24,12 @@ exports.install = function(component, options){
         console.log('lym install requires a bower name');
         return;
     }
-
+    console.log(bowerFolder);
     bowerGet(component);
 
     // pkg must be a qualified package name, as declared on bower, and as stored on local file system
     // url and tag are optional
     function bowerGet(pkg, url, tag){
-
         // if tag provided, check if higher version already exists
         var download = true,
             // prefer url over pkg name, tag is optional

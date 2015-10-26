@@ -1,127 +1,139 @@
-/*
- * This is the "main" Lym file. Lymcli.js acts as a command-line-interface front for this file.
- *
- * */
+#!/usr/bin/env node
 
 'use strict';
 
-var grunt = require('grunt'),
-    path = require('path'),
-    fs = require('fs'),
-    process = require('process'),
-    configLoader = require('./nodeTasks/configLoader');
+var process = require('process'),
 
-function buildConfig(workingFolder, config){
-    config = config ||{};
-    return configLoader.build(config, workingFolder);
+    path = require('path'),
+    yargs = require('yargs').argv,
+    lym = require('./index'),
+    lymCodes = require('./nodeTasks/lymCodes')(),
+    colors = require('colors'),
+    config  = {},
+    allowedCommands = {
+        'build': {
+            use : 'lym build',
+            desc : 'Builds project in dev mode - no minification or concatenation'
+        },
+        'release': {
+            use : 'lym release',
+            desc :'Builds project in release mode - takes longer, css and js is compacted'
+        },
+        'install': {
+            use : 'lym install [componentName]',
+            desc :'Installs a lym-compatible component through Bower'
+        },
+        'init': {
+            use : 'lym init [componentName]',
+            desc : 'Initializes an installed component (components are automatically initiated when installed)'
+        },
+        'fast': {
+            use : 'lym fast',
+            desc : 'Fast build - this is the same build triggered by watch.'
+        },
+        'scaffold': {
+            use : 'lym scaffold [contentName]',
+            'desc' : 'Sets up a project in the current folder. Content name is optional.'
+        },
+        'watch': {
+            use : 'lym watch',
+            desc : 'Starts lym in watch mode - changing a hbs or scss file will trigger a fast rebuild. If you add new files or make extensive changes you should run lym build.'
+        }
+    };
+
+// optional arg
+var workingFolder = yargs.p;
+
+
+// get and verify command. If fail, print info
+var command = process.argv.length >= 3  ? process.argv[2] : null;
+if (!command || allowedCommands[command] === undefined){
+
+    console.log(('[err' + lymCodes.exit.INVALID_COMMAND + '] ' + command +' is not a valid command.\r\n').red);
+    console.log('Lym supports the following:\r\n');
+
+    for (var p in allowedCommands){
+        console.log(allowedCommands[p].use.green);
+        console.log(allowedCommands[p].desc + '\r\n');
+    }
+
+    process.exit(1);
 }
 
 
-/*
- * Installs a component.
- * */
-exports.install = function(component, options){
-    var config = buildConfig(options.path, options.config),
-        task = require('./nodeTasks/installComponent');
-
-    task.install(component, {
-        config : config
-    });
-};
-
-
-/*
- * Scaffolds a website from the given 'content' folder in /assets
- * */
-exports.scaffold = function(content , options){
-    var config = buildConfig(options.path, options.config),
-        task = require('./nodeTasks/scaffold');
-
-    task.scaffold(content , config, options.nomake);
-};
+// look for config json in command line args
+if (yargs.config){
+    try
+    {
+        config = JSON.parse(yargs.config);
+    }
+    catch(ex)
+    {
+        console.log('[err' + lymCodes.exit.INVALID_CONFIG + '] Error parsing config JSON. Is config valid Json? ' + ex);
+        process.exit(1);
+    }
+}
 
 
-/*
- *
- * */
-exports.init = function(component, options){
-    var config = buildConfig(options.path, options.config),
-        task = require('./nodeTasks/initializeComponent');
+if (command === 'install'){
 
-    task.initialize(component, config);
-};
+    var component = process.argv.length > 3 ?  process.argv[3] : null;
+    lym.install(component, {
+        config: config,
+        path : workingFolder
 
-
-/*
- *
- * */
-exports.build = function(options){
-    var config = buildConfig(options.path, options.config),
-        task = require('./grunt');
-
-    task.grunt(config, {
-        task : 'build',
-        stack : options.stack
-    });
-};
-
-
-/*
- *
- * */
-exports.release = function(options){
-    var config = buildConfig(options.path, options.config),
-        task = require('./grunt');
-
-    task.grunt(config,{
-        task : 'release',
-        stack : options.stack
-    });
-};
-
-
-/*
- *
- * */
-exports.fast = function(options){
-    var config = buildConfig(options.path, options.config),
-        task = require('./grunt');
-
-    task.grunt(config,{
-        task : 'fast',
-        stack : options.stack
-    });
-};
-
-
-/*
-*
-* */
-exports.watch = function(options){
-    console.log('Lym is watching for changes ...');
-
-    var config = buildConfig(options.path, options.config),
-        chokidar = require('chokidar');
-
-    var watcher = chokidar.watch([config.lymConfig.componentFolder, config.lymConfig.assembleFolder], {
-        persistent: true
     });
 
-    watcher
-        .on('change', function(p) {
-            var ext = path.extname(path.basename(p)).replace('.',''),
-                allowedExtensions = ['scss', 'hbs'];
+} else if(command === 'scaffold'){
 
-            if (allowedExtensions.indexOf(ext) === -1)
-                return;
+    // content is optional
+    var content = process.argv.length > 3 ?  process.argv[3] : null;
 
-            console.log(ext + ' change detected');
+    // flag being mistaken for content. Todo : clunky fix, find something better
+    if (content && content.indexOf('--') === 0)
+        content = null;
 
-            var task = require('./grunt');
-            task.grunt(config, {
-                task : 'watch',
-                targets : [ext]
-            });
+    lym.scaffold(content , {
+        config :config,
+        path : workingFolder,
+        nomake : yargs.nomake
+    });
 
-        })
-};
+} else if(command === 'init'){
+
+    var component = process.argv.length > 3 ?  process.argv[3] : null;
+
+    lym.init(component, {
+        config : config,
+        path : workingFolder
+    });
+
+} else if (command === 'build' ) {
+
+    lym.build({
+        config :config,
+        path : workingFolder
+    });
+
+} else if (command === 'release') {
+
+    lym.release({
+        config :config,
+        path : workingFolder
+    });
+
+} else if (command === 'fast') {
+
+    lym.fast({
+        config :config,
+        path : workingFolder
+    });
+
+} else if(command === 'watch') {
+
+    lym.watch({
+        config : config,
+        path : workingFolder
+    });
+
+}
