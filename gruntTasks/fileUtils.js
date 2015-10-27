@@ -242,19 +242,19 @@ exports.findBowerSettings = function(cwd){
 
     // look in working folder
     if(fs.existsSync(bowerrcPath)){
-        console.log('Found local .bowerrc settings file.');
+        //console.log('Found local .bowerrc settings file.');
         return jf.read(bowerrcPath);
     }
 
     ;
     bowerrcPath = path.join(home, '.bowerrc');
     if(fs.existsSync(bowerrcPath)){
-        console.log('Found HOME .bowerrc settings file.');
+        //console.log('Found HOME .bowerrc settings file.');
         return jf.read(bowerrcPath);
     }
 
     return {};
-}
+};
 
 /*
  * Builds path bridge from path to point where lym intersects

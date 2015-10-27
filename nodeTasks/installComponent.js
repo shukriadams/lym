@@ -12,19 +12,21 @@ exports.install = function(component, options){
         mkdirp = require('mkdirp'),
         cpr = require('cpr'),
         fs = require('fs'),
+        colors = require('colors'),
         semver = require('semver'),
         fileUtils = require('./../gruntTasks/fileUtils'),
         customBowerConfig = fileUtils.findBowerSettings(options.config.lymConfig.cwd),
         init = require('./initializeComponent'),
         bowerDirectory = require('bower-directory'),
+        packagesToFetch = {},
         bowerFolder = bowerDirectory.sync();
 
     // ensure component name
     if (!component){
-        console.log('lym install requires a bower name');
+        console.log('lym install requires a bower name'.red);
         return;
     }
-    console.log(bowerFolder);
+
     bowerGet(component);
 
     // pkg must be a qualified package name, as declared on bower, and as stored on local file system
@@ -36,6 +38,7 @@ exports.install = function(component, options){
             bowerPullName = (url || pkg) + (tag ? '#' + tag : ''),
             bowerPackageFolder = path.join(bowerFolder, pkg);
 
+        // if the package already exists, check version difference, fail on major, and overwrite/surrender on minor
         if (tag && fs.existsSync(bowerPackageFolder)){
             var bowerJsonPath = path.join(bowerFolder, pkg, '.bower.json');
             if (fs.existsSync(bowerJsonPath)){
@@ -45,14 +48,15 @@ exports.install = function(component, options){
                 var diff = semver.diff(presentVersion, tag);
 
                 if (diff === 'major'){
-                    throw 'Error - incompatible versions of ' + pkg + ' : '  + tag + ' requested, ' + presentVersion + ' already present.';
+                    console.log(('Error - incompatible versions of ' + pkg + ' : '  + tag + ' requested, ' + presentVersion + ' already present.').red);
+                    return;
                 }
 
                 if (semver.gt(presentVersion, tag)){
-                    console.log('A better version of ' + pkg + ' (' + presentVersion + ') is already installed.');
+                    console.log(('A better version of ' + pkg + ' (' + presentVersion + ') is already installed.').yellow);
                     download = false;
                 } else if (semver.eq(presentVersion, tag)){
-                    console.log(pkg + ' is already installed');
+                    console.log((pkg + ' is already installed').yellow);
                     download = false;
                 }
             }
@@ -81,9 +85,10 @@ exports.install = function(component, options){
         }
 
 
+        // Handles package after downloading, or if downloading is unnecessary.
         function processPackage(){
 
-            // copy to target folder
+            // create component folder
             var componentTargetPath = fileUtils.resolveComponent(options.config.lymConfig.componentFolder, pkg);
             componentTargetPath = componentTargetPath || path.join(options.config.lymConfig.componentFolder, pkg);
             if (!fs.existsSync(componentTargetPath)){
@@ -94,12 +99,12 @@ exports.install = function(component, options){
             // case skip but move on to handle dependencies. The git check is a safeguard to allow developing of
             // components inside components folder.
             if (fs.existsSync(path.join( componentTargetPath, '.git'))) {
-                console.log('Installed version of ' + pkg + ' contains git clone, will not overwrite.');
+                console.log(('Installed version of ' + pkg + ' contains git clone, will not overwrite.').yellow);
             } else {
                 var srcFolder = path.join(bowerFolder, pkg);
-                console.log('Copying ' + pkg + (tag? '#' + tag:'') + ' to components folder...');
+                //console.log('Copying ' + pkg + (tag? '#' + tag:'') + ' to components folder...');
                 cpr(srcFolder, componentTargetPath, {overwrite : true}, function(err, files){
-                    console.log(pkg + ' copied to components folder.');
+                    console.log((pkg + ' copied to components folder.').green);
                     init.initialize(pkg, options.config);
                 });
             }
@@ -112,22 +117,89 @@ exports.install = function(component, options){
             }
 
             var componentJson = jf.read(componentPath);
+
+            // will not exist for primary package
+            if (packagesToFetch[pkg])
+                packagesToFetch[pkg].processed = true;
+
             if (!componentJson.dependencies){
+                startNextDependencyDownload();
                 return;
             }
 
+
+
+            // set up list of dependencies - dependencies will be fetched in series (one after next) to prevent disk io collisions.
             for (var dep in componentJson.dependencies){
+                var overwrite = true;
+                if (packagesToFetch[dep]){
+                    overwrite= false;
+                    var diff = semver.diff(packagesToFetch[dep].tag, componentJson.dependencies[dep]);
+
+                    if (diff === 'major'){
+                        throw 'Error - incompatible versions of ' + dep + '.';
+                    }
+
+                    if (semver.lt(packagesToFetch[dep].tag, componentJson.dependencies[dep])){
+                        overwrite = true;
+                    }
+                }
+
+                if (overwrite){
+                    packagesToFetch[dep] = {
+                        name : dep,
+                        info : false,
+                        processed : false,
+                        tag : componentJson.dependencies[dep]
+                    };
+                }
+            }
+
+            for (var dep in packagesToFetch){
+                if (packagesToFetch[dep].info)
+                    continue;
+
                 getBowerPackageInfo(dep, function(url ,dep){
-                    if (url){
-                        bowerGet(dep, url, componentJson.dependencies[dep]);
-                    }else  {
+                    packagesToFetch[dep].info = true;
+                    packagesToFetch[dep].url = url;
+
+                    if (!url){
                         console.log('No url found for package ' + dep);
                     }
+
+                    // _try_ to start dependency downloads.
+                    startNextDependencyDownload();
                 });
             }
+
+
         }
 
     } // bowerGet()
+
+
+    // tries to start downloading the next dependency. will
+    function startNextDependencyDownload(){
+
+        var ready = true,
+            next = null;
+
+        for (var dep in packagesToFetch){
+            // if any package is still awaiting bower info, wait downloading
+            if (!packagesToFetch[dep].info) {
+                ready = false;
+                break;
+            }
+
+            if (!packagesToFetch[dep].processed)
+                next = packagesToFetch[dep];
+        }
+
+        if (!ready || !next)
+            return;
+
+        bowerGet(next.name, next.url, next.tag);
+    }
 
 
     // Gets bower info for a given package from bower registry. If no bower registry is explicitly provided, the official
@@ -137,7 +209,7 @@ exports.install = function(component, options){
 
         var registryUrl = customBowerConfig.registry || 'http://bower.herokuapp.com';
         registryUrl = registryUrl + '/packages/' + pkg;
-        console.log('Looking up info for package ' + pkg + ' from ' + registryUrl);
+        console.log(('Looking up info for package ' + pkg + ' from ' + registryUrl).cyan);
 
         http.get(registryUrl, function(res) {
             var json = '';

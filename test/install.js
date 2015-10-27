@@ -67,7 +67,7 @@ describe('install component tests', function() {
 
 
 
-
+    // Note : these tests should be done on lym directly instead of via the CLI, but doing so fails to pull.
     it('should install a chain of components', function(done) {
 
         sync('node lym install lymtest1 --p ' + testFolder, { cwd : path.join(__dirname, '..'), stdio:[0,1,2] });
@@ -87,6 +87,7 @@ describe('install component tests', function() {
 
         done();
     });
+
 
     it('should install a component and do a soft version override', function(done) {
 
