@@ -159,7 +159,7 @@ exports.grunt = function(config, gruntOptions){
 
 
     // Compiles SASS to CSS. Uses Node-sass
-    grunt.registerTask('compass', function(){
+    grunt.registerTask('sass', function(){
         var done = this.async(),
             sass = require('node-sass'),
             mkdirp =  require('mkdirp'),
@@ -176,7 +176,8 @@ exports.grunt = function(config, gruntOptions){
                     path.basename(file).substr(0, path.basename(file).length - 5) + '.css'); // remove .scss extension
 
                 var result = sass.renderSync({
-                    file: file
+                    file: file,
+                    sourceComments: true
                 });
 
                 fs.writeFileSync(outfile, result.css);
@@ -197,7 +198,7 @@ exports.grunt = function(config, gruntOptions){
         'lym-build-require-configs:' + mode,
         'lym-build-js-concat-list:' + mode,
         'lym-build-master-sass',
-        'compass',
+        'sass',
         'concat:components',
         'concat:pages',
         'assemble:site',
@@ -208,7 +209,7 @@ exports.grunt = function(config, gruntOptions){
 
     var devWatchTasks = [
         'lym-start',
-        'compass',
+        'sass',
         'assemble:site',
         'lym-end'
     ];
@@ -229,7 +230,7 @@ exports.grunt = function(config, gruntOptions){
         'lym-build-require-configs:' + mode,
         'lym-build-js-concat-list:' + mode,
         'lym-build-master-sass',
-        'compass',
+        'sass',
         'concat:components',
         'concat:pages',
         'assemble:site',

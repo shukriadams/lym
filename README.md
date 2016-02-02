@@ -1,6 +1,8 @@
 **Lym**
 ===
-Lym is a builder/compiler for modular frontend end code, implemented in NodeJS. It uses **[Assemble](http://assemble.io)** (markup), **[RequireJS](http://requirejs.org)** (Javascript), and **[Sass](http://sass-lang.com)** (CSS). Components are managed as **[Bower](http://bower.io)** packages.
+Lym is a builder/compiler for static, modular frontend code. It is implemented in NodeJS. It uses **[Assemble](http://assemble.io)** (markup), **[RequireJS](http://requirejs.org)** (Javascript), and **[Sass](http://sass-lang.com)** (CSS). Components are managed as **[Bower](http://bower.io)** packages.
+
+Why static frontend? That discussion is too long for this readme, but you can try this [Smashing Magazine](https://www.smashingmagazine.com/2015/11/modern-static-website-generators-next-big-thing) article for a quick introduction. There's also this [demo site](http://me.manafeed.com/lym.html) built with Lym.
 
 With Lym you can structure your frontend code into clearly-separated folder components. A component can contain Handlebar templates, Sass and Javascript files. Main component files are automatically Sass compiled and RequireJS linked. Put each component in its own repository as a Bower package, and easily use it across multiple projects. Create complex components that reuse content in other components, all with semantic version dependency linking.
 
