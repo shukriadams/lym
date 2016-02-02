@@ -1,4 +1,4 @@
-**Lym**
+**[Lym](http://me.manafeed.com/lym.html)**
 ===
 Lym is a builder/compiler for static, modular frontend code. It is implemented in NodeJS. It uses **[Assemble](http://assemble.io)** (markup), **[RequireJS](http://requirejs.org)** (Javascript), and **[Sass](http://sass-lang.com)** (CSS). Components are managed as **[Bower](http://bower.io)** packages.
 
