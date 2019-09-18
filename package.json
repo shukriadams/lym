@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "assemble": "0.4.42",
-    "bower" : "1.5.3",
+    "bower" : "1.8.8",
     "bower-directory" : "1.0.0",
     "colors" : "1.1.2",
     "cpr" : "0.4.3",
